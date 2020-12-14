@@ -203,25 +203,25 @@ public class ArvoreBinaria {
 	private No remover(int x, No i) throws Exception {
 
 		if (i == null) {
-         throw new Exception("Erro ao remover!");
+         	throw new Exception("Erro ao remover!");
 
-      } else if (x < i.elemento) {
-         i.esq = remover(x, i.esq);
+      	} else if (x < i.elemento) {
+         	i.esq = remover(x, i.esq);
 
-      } else if (x > i.elemento) {
-         i.dir = remover(x, i.dir);
+      	} else if (x > i.elemento) {
+         	i.dir = remover(x, i.dir);
 
-      // Sem no a direita.
-      } else if (i.dir == null) {
-         i = i.esq;
+      	// Sem no a direita.
+      	} else if (i.dir == null) {
+         	i = i.esq;
 
-      // Sem no a esquerda.
-      } else if (i.esq == null) {
-         i = i.dir;
+      	// Sem no a esquerda.
+      	} else if (i.esq == null) {
+         	i = i.dir;
 
-      // No a esquerda e no a direita.
-      } else {
-         i.esq = antecessor(i, i.esq);
+      	// No a esquerda e no a direita.
+      	} else {
+         	i.esq = antecessor(i, i.esq);
 		}
 
 		return i;
@@ -235,12 +235,12 @@ public class ArvoreBinaria {
 	 */
 	private No antecessor(No i, No j) {
 
-      // Existe no a direita.
+      	// Existe no a direita.
 		if (j.dir != null) {
-         // Caminha para direita.
+         	// Caminha para direita.
 			j.dir = antecessor(i, j.dir);
 
-      // Encontrou o maximo da subarvore esquerda.
+      	// Encontrou o maximo da subarvore esquerda.
 		} else {
 			i.elemento = j.elemento; // Substitui i por j.
 			j = j.esq; // Substitui j por j.ESQ.

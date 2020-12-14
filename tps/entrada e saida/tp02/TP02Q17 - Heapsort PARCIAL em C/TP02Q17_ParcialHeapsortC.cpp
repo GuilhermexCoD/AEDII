@@ -1,0 +1,569 @@
+//Curso: Ciencia da Computacao / Tarde
+//Universidade: PUC Minas
+//Materia: AEDII Lab
+//Aluno: Guilherme Froes Camba de Freitas
+//Matricula: 718116
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX_LENGTH 1000
+
+void selecao(struct Jogador *array, int n);
+void swap(struct Jogador *i, struct Jogador *j);
+void imprimirJogador(struct Jogador* jogador);
+void imprimirPrimeiros(struct Jogador* players,int quantity);
+void lerJogador(Jogador* jogador,char *input);
+char* validateString(char *line,int size,char separator);
+void cloneJogador(struct Jogador* toClone,struct Jogador* receiver);
+void readFile(const char* fileName,struct Jogador* players);
+bool isFim(char targetString[MAX_LENGTH]);
+
+struct Jogador{
+
+    int id;
+    char name[200];
+    int altura;
+    int peso;
+    char universidade[200];
+    int anoNascimento;
+    char cidadeNascimento[200];
+    char estadoNascimento[200];
+
+};
+
+/** 
+* Imprimir.
+* 
+* Este metodo imprime na tela todos atributos de Jogador.
+*/ 
+void imprimirJogador(struct Jogador* jogador){
+    printf("[%d ## %s ## %d ## %d ## %d ## %s ## %s ## %s]",jogador->id,jogador->name,
+            jogador->altura,jogador->peso,jogador->anoNascimento,
+            jogador->universidade,jogador->cidadeNascimento,jogador->estadoNascimento);
+}
+
+/** 
+* Imprimir.
+* 
+* Este metodo imprime na tela todos atributos de Jogador de n Jogadores.
+*/ 
+void imprimirPrimeiros(struct Jogador* players,int quantity){
+    for(int i = 0;i < quantity;i++){
+        imprimirJogador(&players[i]);
+    }
+}
+
+/** 
+* Ler.
+* 
+* Este metodo faz a leitura de uma string separada por virgulas contendo os atributos de jogador nessa ordem:
+*  Id,Nome,Altura,Peso,Universidade,AnoNascimento,CidadeNascimento,EstadoNascimento
+* @param jogador Jogador a ser lido.
+* @param input String a ser lida.
+*/
+void lerJogador(Jogador* jogador,char *input){
+
+    // Extract the first token
+    char * token = strtok(input, ",");
+    int i = 0;
+    // loop through the string to extract all other tokens
+    while( token != NULL ) {
+        switch(i){
+            case 0:
+                jogador->id = atoi(token);
+            break;
+            
+            case 1:
+                strcpy (jogador->name ,token);
+            break;
+
+            case 2:
+                jogador->altura = atoi(token);
+            break;
+
+            case 3:
+                jogador->peso = atoi(token);
+            break;
+
+            case 4:
+                strcpy(jogador->universidade, token);
+            break;
+
+            case 5:
+                jogador->anoNascimento = atoi(token);
+            break;
+
+            case 6:
+                strcpy(jogador->cidadeNascimento, token);
+            break;
+
+            case 7:
+                strcpy(jogador->estadoNascimento, token);
+            break;
+        }
+
+        token = strtok(NULL, ",");
+        i++;
+    }
+
+    //imprimirJogador(jogador);
+}
+
+/** 
+* Validate String.
+* 
+* Este metodo retorna uma String valida para os padroes de jogador
+* @param line String contendo os dados de Jogador.
+* @param size tamanho da String.
+* @param separator Char que separa a String.
+*/
+char* validateString(char *line,int size,char separator){
+    //char stringCopy[size*2];
+    //printf("\nValidando linha: %s",line);
+
+    char string[size];
+    strcpy(string,line);
+    line = (char*) malloc(size*2);
+    char notInfor[] = "nao informado";
+
+    int copyIndex = 0;
+
+    int splitSize = 1;
+
+    int i = 0;
+
+    while(string[i] != '\0'){
+
+        char actualChar = string[i];
+
+        if(actualChar == '\r' || actualChar == '\n')
+            actualChar = '\0';
+
+        *(line+copyIndex) = actualChar;
+        copyIndex++;
+
+        if(actualChar == separator){
+            if(i+1 <= size && (string[i+1] == separator) || (string[i+1] == '\0' || string[i+1] == '\r' || string[i+1] == '\n')){
+                
+                for(int j = 0;j < strlen(notInfor);j++){
+
+                    *(line+copyIndex) = notInfor[j];
+                    
+                    copyIndex++;
+                }
+
+            }
+            splitSize++;
+        }
+
+        i++;
+    }
+
+    //printf("Linha validada = %s",line);
+    return line;
+}
+
+/** 
+* Read File.
+* 
+* Este metodo lee um arquivo contendo varios jogadores
+* @param fileName caminho e nome do arquivo.
+* @param players Apontador para o array de jogadores.
+*/
+void readFile(const char *fileName,struct Jogador* players){
+    FILE *p = fopen (fileName, "r");
+    char str[200+1];
+    char* resp;
+    int i = 0;
+
+    //struct Jogador jogadores[10000];
+
+    if (p != NULL) {
+        do {
+            resp = fgets(str, 200, p);
+            if(resp != NULL && i > 0){
+                char *ptr;
+
+                //printf("%s", str);
+
+                ptr = validateString(str,sizeof(str), ',');
+
+                lerJogador(&players[i-1],ptr);
+            }
+
+            i++;
+        } while (resp != NULL);
+        fclose(p);
+    }
+}
+
+void cloneJogador(struct Jogador* toClone,struct Jogador* receiver){
+    receiver->id = toClone->id;
+    strcpy(receiver->name,toClone->name);
+    receiver->altura = toClone->altura;
+    receiver->peso = toClone->peso;
+    strcpy(receiver->universidade, toClone->universidade);
+    receiver->anoNascimento = toClone->anoNascimento;
+    strcpy(receiver->cidadeNascimento, toClone->cidadeNascimento);
+    strcpy(receiver->estadoNascimento, toClone->estadoNascimento);
+}
+
+/** 
+* Is Fim.
+* 
+* Este metodo retorna verdadeiro quando a String alvo possui a palavra FIM.
+* @param targetString String alvo.
+*/ 
+bool isFim(char targetString[MAX_LENGTH]){
+    return (strlen(targetString) >= 3 && targetString[0] == 'F' && targetString[1] == 'I' && targetString[2] == 'M');
+}
+
+void selecao(struct Jogador *array, int n){
+
+    for (int i = 0; i < (n - 1); i++) {
+        int menor = i;
+        for (int j = (i + 1); j < n; j++){
+            int comp = strcmp (array[menor].name,array[j].name);
+
+            if (comp > 0){
+                menor = j;
+            }
+        }
+        swap(&array[menor], &array[i]);
+    }
+}
+
+int minIndex(struct Jogador *array, int i,int j){
+    if (i == j) 
+        return i; 
+  
+    // Find minimum of remaining elements 
+    int k = minIndex(array, i + 1, j); 
+  
+    int comp = strcmp (array[i].name,array[k].name);
+    // Return minimum of current and remaining. 
+    return (comp < 0)? i : k;
+}
+
+void selecaoRecur(struct Jogador *array, int n,int index){
+
+    if(n == index)
+        return;
+
+    int k = minIndex(array, index, n-1); 
+    
+    if (k != index) 
+       swap(&array[k], &array[index]); 
+  
+    selecaoRecur(array, n, index + 1); 
+}
+
+//=============================================================================
+// PROCEDIMENTO PARA TROCAR DOIS ELEMENTOS DO VETOR
+void swap(struct Jogador *i, struct Jogador *j) {
+   struct Jogador temp = *i;
+   *i = *j;
+   *j = temp;
+}
+
+bool compPesoNome(struct Jogador *a,struct Jogador *b){
+    if(a->peso == b->peso){
+        int comp = strcmp (a->name,b->name);
+        return (comp > 0);
+    }else{
+        return (a->peso > b->peso);
+    }
+}
+
+void insercaoPorCor(struct Jogador *array, int n, int cor, int h){
+    for (int i = (h + cor); i < n; i+=h) {
+        struct Jogador tmp = array[i];
+        int j = i - h;
+
+
+        while ((j >= 0) && compPesoNome(&array[j],&tmp)) {
+            array[j + h] = array[j];
+            j-=h;
+        }
+        array[j + h] = tmp;
+    }
+}
+
+void shellsort(struct Jogador *array, int n) {
+    int h = 1;
+
+    do { h = (h * 3) + 1; } while (h < n);
+
+    do {
+        h /= 3;
+        for(int cor = 0; cor < h; cor++){
+            insercaoPorCor(array, n, cor, h);
+        }
+    } while (h != 1);
+}
+
+bool compEstadoNascimento(struct Jogador *a,struct Jogador *b){
+    int compEstado = strcmp (a->estadoNascimento,b->estadoNascimento);
+    if(compEstado == 0){
+        int compName = strcmp (a->name,b->name);
+        return (compName > 0);
+    }else{
+        return (compEstado > 0);
+    }
+}
+
+void quicksortRec(struct Jogador *array, int esq, int dir) {
+    int i = esq, j = dir;
+    struct Jogador pivo = array[(dir+esq)/2];
+    while (i <= j) {
+        // while (compEstadoNascimento(&array[i],&pivo)) i++;
+        // while (!compEstadoNascimento(&array[j],&pivo)) j--;
+
+        while ((strcmp (array[i].estadoNascimento,pivo.estadoNascimento) == 0)?(strcmp (array[i].name,pivo.name) < 0):(strcmp (array[i].estadoNascimento,pivo.estadoNascimento) < 0)) i++;
+        while ((strcmp (array[j].estadoNascimento,pivo.estadoNascimento) == 0)?(strcmp (array[j].name,pivo.name) > 0):(strcmp (array[j].estadoNascimento,pivo.estadoNascimento) > 0)) j--;
+
+        if (i <= j) {
+            swap(&array[i], &array[j]);
+            i++;
+            j--;
+        }
+    }
+    if (esq < j)  quicksortRec(array, esq, j);
+    if (i < dir)  quicksortRec(array, i, dir);
+}
+//=============================================================================
+void quicksort(struct Jogador *array, int n) {
+    quicksortRec(array, 0, n-1);
+}
+
+bool compAnoNascimento(struct Jogador *a,struct Jogador *b){
+    if(a->anoNascimento == b->anoNascimento){
+        int comp = strcmp (a->name,b->name);
+        return (comp > 0);
+    }else{
+        return (a->anoNascimento > b->anoNascimento);
+    }
+}
+
+void bolha(struct Jogador *array, int n){
+
+    int i, j;
+
+    for (i = (n - 1); i > 0; i--) {
+        for (j = 0; j < i; j++) {
+            if (compAnoNascimento(&array[j] , &array[j + 1])) {
+                swap(&array[j], &array[j + 1]);
+            }
+        }
+    }
+}
+
+int getMax(struct Jogador *array, int n)
+{
+    int mx = array[0].id;
+    for (int i = 1; i < n; i++)
+        if (array[i].id > mx)
+            mx = array[i].id;
+    return mx;
+}
+ 
+void countSort(struct Jogador *array, int n, int exp)
+{
+    struct Jogador output[n]; // output array
+    int i, count[10] = { 0 };
+ 
+    for (i = 0; i < n; i++)
+        count[(array[i].id / exp) % 10]++;
+ 
+    for (i = 1; i < 10; i++)
+        count[i] += count[i - 1];
+ 
+    for (i = n - 1; i >= 0; i--) {
+        output[count[(array[i].id / exp) % 10] - 1] =  array[i];
+        count[(array[i].id / exp) % 10]--;
+    }
+ 
+    for (i = 0; i < n; i++){
+        array[i] = output[i];
+    }
+}
+ 
+void radixsort(struct Jogador *array, int n)
+{
+    int m = getMax(array, n);
+ 
+    for (int exp = 1; m / exp > 0; exp *= 10)
+        countSort(array, n, exp);
+}
+
+void parcialInsercao(struct Jogador *array, int n,int k){
+    for(int i = 1;i < n;i++){
+        struct Jogador tmp = array[i];
+        int j = (i<k)? i - 1:k-1;
+        // while((j >= 0) && (array[j].anoNascimento > tmp.anoNascimento)){
+        while((j >= 0) && compAnoNascimento(&array[j],&tmp)){
+            array[j+1] = array[j];
+            j--;
+        }
+        array[j+1] = tmp;
+    }
+}
+
+bool hasBiggerHeight(struct Jogador *a,struct Jogador *b){
+
+    if(a->altura == b->altura){
+        int comp = strcmp (a->name,b->name);
+        return (comp > 0);
+    }
+    
+    return (a->altura > b->altura);
+}
+
+bool hasLowerHeight(struct Jogador *a,struct Jogador *b){
+
+    if(a->altura == b->altura){
+        int comp = strcmp (a->name,b->name);
+        return (comp < 0);
+    }
+    
+    return (a->altura < b->altura);
+}
+
+int getMaiorFilho(struct Jogador *array, int i, int tamHeap){
+    int filho;
+    if (2*i == tamHeap || hasBiggerHeight(&array[2*i] ,&array[2*i+1])){
+        filho = 2*i;
+    } else {
+        filho = 2*i + 1;
+    }
+    return filho;
+}
+
+void reconstruir(struct Jogador *array, int tamHeap){
+    int i = 1;
+    while(i <= (tamHeap/2)){
+        int filho = getMaiorFilho(array, i, tamHeap);
+        if(hasLowerHeight(&array[i], &array[filho])){
+            swap(&array[i],&array[filho]);
+            i = filho;
+        }else{
+            i = tamHeap;
+        }
+    }
+}
+
+void construir(struct Jogador *array, int tamHeap){
+    for(int i = tamHeap; i > 1 && hasLowerHeight(&array[i] , &array[i/2]); i /= 2){
+        swap(&array[i],&array[i/2]);
+    }
+}
+/*
+void parcialHeapsort(struct Jogador *array, int n,int k){
+
+    int esq = 1;
+    int dir;
+    int Aux = 0;
+
+    construir(array,n);
+    dir = n;
+
+    while(Aux < k){
+        swap(&array[1] ,&array[n - Aux]);
+        dir--;
+        Aux++;
+        reconstruir(array,dir);
+    }
+}
+*/
+
+int myPower(int base,int power){
+    int result = 1;
+
+    for(int i = 0; i < power;i++){
+        result *= base;
+    }
+
+    return result;
+}
+void showHeap(struct Jogador *array,int size){
+
+    int level = -1;
+    int total = 0;
+    for(int i = 1;i <= size;i++){
+
+        if(total == 0){
+            level++;
+            printf("\n[%d]",level);
+            total = myPower(2,level); 
+        }
+        total--;
+        printf("(%s : %d)%c",array[i].name,array[i].altura,((total != 0 && i != size)?',':' '));
+    }
+    printf("\n\n");
+}
+
+void parcialHeapsort(struct Jogador *array, int n,int k){
+
+    for(int tam = 2; tam <=k;tam++){
+        construir(array,tam);
+    }
+    
+    //showHeap(array,tam);
+    
+    for(int i = k + 1; i <= n;i++){
+        if(hasLowerHeight(&array[i] , &array[1])){
+            swap(&array[i],&array[1]);
+            reconstruir(array,k);
+        }
+    }
+
+    int tam = n;
+    while(tam > 1){
+        swap(&array[1] ,&array[tam--]);
+        reconstruir(array,tam);
+    }
+}
+
+int main(int argc, char *argv[]) {
+
+    const char* FILE_NAME = "/tmp/players.csv";
+    //printf("Trying to read file: %s",FILE_NAME);
+
+    struct Jogador players[5000];
+
+    readFile(FILE_NAME,players);
+
+    //imprimirPrimeiros(players,3921);
+
+    char line [MAX_LENGTH];
+    
+    fgets(line, MAX_LENGTH, stdin);
+
+    struct Jogador jogadores[5000];
+
+    int count = 0;
+
+    while (!isFim(line))
+    {
+        int index = atoi(line);
+        
+        //printf("index: %d",index);   
+        //imprimirJogador(&players[index]);
+        //printf("\n");
+        cloneJogador(&players[index],&jogadores[count]);
+        count++;
+        fgets(line, MAX_LENGTH, stdin);
+    }
+
+    // selecao(jogadores,count);
+    parcialHeapsort(jogadores,count,12);
+
+    for(int i = 2;i < 12;i++){
+        imprimirJogador(&jogadores[i]);
+        printf("\n");
+    }
+
+    return 0;
+}

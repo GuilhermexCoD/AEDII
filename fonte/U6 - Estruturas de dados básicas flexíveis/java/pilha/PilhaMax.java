@@ -4,13 +4,13 @@
  * @author Max do Val Machado
  * @version 2 01/2015
  */
-public class Pilha {
+public class PilhaMax {
 	private Celula topo;
 
 	/**
 	 * Construtor da classe que cria uma fila sem elementos.
 	 */
-	public Pilha() {
+	public PilhaMax() {
 		topo = null;
 	}
 

@@ -1,0 +1,79 @@
+ ==== PILHA DINAMICA (First In Last Out) ====
+
+Iniciar insercoes Pilha: 
+
+Empilhando : 0
+[ 0 ] 
+Empilhando : 1
+[ 1 0 ] 
+Empilhando : 2
+[ 2 1 0 ] 
+Empilhando : 3
+[ 3 2 1 0 ] 
+Empilhando : 4
+[ 4 3 2 1 0 ] 
+Empilhando : 5
+[ 5 4 3 2 1 0 ] 
+
+Apos insercoes Pilha: 
+
+[ 5 4 3 2 1 0 ] 
+
+Iniciar remocoes Pilha: 
+
+Desempilhando : 5
+[ 4 3 2 1 0 ] 
+Desempilhando : 4
+[ 3 2 1 0 ] 
+Desempilhando : 3
+[ 2 1 0 ] 
+Desempilhando : 2
+[ 1 0 ] 
+Desempilhando : 1
+[ 0 ] 
+Desempilhando : 0
+[ ] 
+
+Apos as remocoes Pilha: 
+
+[ ] 
+
+ ==== FILA DINAMICA (First In First Out) ====
+
+Iniciar insercoes Fila: 
+
+Enfileirar : 0
+[ 0 ] 
+Enfileirar : 1
+[ 0 1 ] 
+Enfileirar : 2
+[ 0 1 2 ] 
+Enfileirar : 3
+[ 0 1 2 3 ] 
+Enfileirar : 4
+[ 0 1 2 3 4 ] 
+Enfileirar : 5
+[ 0 1 2 3 4 5 ] 
+
+Apos insercoes Fila: 
+
+[ 0 1 2 3 4 5 ] 
+
+Iniciar remocoes Fila: 
+
+Desenfileirar : 0
+[ 1 2 3 4 5 ] 
+Desenfileirar : 1
+[ 2 3 4 5 ] 
+Desenfileirar : 2
+[ 3 4 5 ] 
+Desenfileirar : 3
+[ 4 5 ] 
+Desenfileirar : 4
+[ 5 ] 
+Desenfileirar : 5
+[ ] 
+
+Apos as remocoes Fila: 
+
+[ ] 

@@ -178,7 +178,7 @@ void removerRec(int x, No** i) {
       free(del);
 
    } else {
-      antecessor(i, &((*i)->esq));
+      antecessor(i, &((*i)->dir));
    }
 }
 
@@ -195,6 +195,18 @@ void antecessor(No** i, No** j) {
       No* del = *j;
       (*i)->elemento = (*j)->elemento;
       (*j) = (*j)->esq;
+      free(del);
+   }
+}
+
+void sucessor(No** i, No** j) {
+   if ((*j)->esq != NULL) {
+      sucessor(i, &((*j)->esq));
+
+   } else {
+      No* del = *j;
+      (*i)->elemento = (*j)->elemento;
+      (*j) = (*j)->dir;
       free(del);
    }
 }
